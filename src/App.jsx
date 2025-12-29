@@ -16,7 +16,7 @@ import Contact from './pages/Contact';
 
 function App() {
   return (
-    <Router basename='/zentri'>
+    <Router basename='/zentri/'>
       <ScrollToTop />
       
       {/* Fundo Tecnológico */}
