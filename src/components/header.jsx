@@ -1,32 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Rocket } from 'lucide-react';
+import { Rocket, Menu, X } from 'lucide-react';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  // Fecha o menu sempre que mudar de página ou clicar em um link
+  // Fecha o menu e libera o scroll ao mudar de rota ou clicar
   useEffect(() => {
     setIsOpen(false);
-    // Garante que o scroll da página volte ao topo se necessário
-    document.body.style.overflow = 'unset'; 
+    document.body.style.overflow = 'auto';
   }, [location]);
 
-  // Bloqueia o scroll do fundo quando o menu estiver aberto
+  // Trava o scroll quando o menu abre
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : 'auto';
   }, [isOpen]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -40,78 +33,78 @@ const Header = () => {
   ];
 
   return (
-    <header 
-      className={`fixed top-0 left-0 w-full z-[999] transition-all duration-500 ${
-        scrolled || isOpen ? 'bg-black/90 backdrop-blur-xl py-4 border-b border-white/10' : 'bg-transparent py-6'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative z-[1001]">
-        
-        {/* LOGO */}
-        <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-zentri-main rounded-lg flex items-center justify-center text-black shadow-[0_0_20px_rgba(0,220,130,0.4)]">
-                <Rocket size={22} /> 
+    <>
+      {/* HEADER PRINCIPAL */}
+      <header 
+        className={`fixed top-0 left-0 w-full transition-all duration-300 z-[1000] ${
+          scrolled || isOpen ? 'bg-black/90 backdrop-blur-md border-b border-white/10' : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+          
+          {/* LOGO - Z-index alto para ficar acima do menu se necessário */}
+          <Link to="/" className="flex items-center gap-3 relative z-[1010]">
+            <div className="w-10 h-10 bg-zentri-main rounded-lg flex items-center justify-center text-black">
+              <Rocket size={22} /> 
             </div>
-            <span className="text-2xl font-bold tracking-tighter text-white">
-                ZEN<span className="text-zentri-main">TRI.</span>
+            <span className="text-2xl font-bold text-white">
+              ZEN<span className="text-zentri-main">TRI.</span>
             </span>
-        </Link>
+          </Link>
 
-        {/* MENU DESKTOP */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {/* DESKTOP NAV */}
+          <nav className="hidden md:flex gap-8">
+            {navLinks.map((link) => (
+              <Link 
+                key={link.name} 
+                to={link.path} 
+                className="text-gray-300 hover:text-zentri-main text-sm font-medium transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+
+          {/* BOTÃO MOBILE - Usando Lucide Icons para garantir área de clique limpa */}
+          <button 
+            className="md:hidden text-white p-2 relative z-[1010]"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle Menu"
+          >
+            {isOpen ? <X size={32} /> : <Menu size={32} />}
+          </button>
+        </div>
+      </header>
+
+      {/* OVERLAY DO MENU MOBILE */}
+      {/* Usamos fixed inset-0 e z-[999] para garantir que ele cubra tudo, exceto o header */}
+      <div 
+        className={`fixed inset-0 bg-black z-[999] transition-transform duration-500 ease-in-out md:hidden ${
+          isOpen ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
+        <nav className="flex flex-col items-center justify-center h-full gap-8 px-6">
+          {navLinks.map((link, index) => (
             <Link 
               key={link.name}
               to={link.path} 
-              className={`text-sm font-medium transition-all hover:text-zentri-main ${
-                location.pathname === link.path ? 'text-zentri-main' : 'text-gray-300'
-              }`}
+              // O segredo para o clique funcionar no mobile: 
+              // onClick fechando o estado e garantindo que a navegação ocorra
+              onClick={() => setIsOpen(false)}
+              className={`text-3xl font-bold tracking-tighter transition-all duration-300 ${
+                location.pathname === link.path ? 'text-zentri-main' : 'text-white hover:text-zentri-main'
+              } ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ transitionDelay: `${index * 50}ms` }}
             >
               {link.name}
             </Link>
           ))}
+          
+          <div className={`mt-4 w-12 h-1 bg-zentri-main rounded transition-all delay-500 ${isOpen ? 'opacity-100' : 'opacity-0'}`}></div>
+          <p className="text-gray-500 text-sm font-mono tracking-widest uppercase">Zentri Agency</p>
         </nav>
-
-        {/* BOTÃO HAMBÚRGUER (Aumentei a área de clique) */}
-        <button 
-          className="md:hidden flex flex-col justify-center items-center w-12 h-12 relative focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Abrir menu"
-        >
-          <span className={`block absolute h-0.5 w-7 bg-white transform transition duration-500 ${isOpen ? 'rotate-45' : '-translate-y-2'}`}></span>
-          <span className={`block absolute h-0.5 w-7 bg-white transition duration-500 ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-          <span className={`block absolute h-0.5 w-7 bg-white transform transition duration-500 ${isOpen ? '-rotate-45' : 'translate-y-2'}`}></span>
-        </button>
       </div>
-
-      {/* --- MENU MOBILE OVERLAY --- */}
-      <div 
-        className={`fixed inset-0 w-full h-screen bg-black z-[1000] flex flex-col transition-transform duration-500 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-          <nav className="flex flex-col items-start justify-center h-full px-12 space-y-6">
-              {navLinks.map((link, index) => (
-                <Link 
-                  key={link.name}
-                  to={link.path} 
-                  className={`text-4xl font-black tracking-tighter transition-all duration-300 ${
-                    location.pathname === link.path ? 'text-zentri-main' : 'text-white'
-                  } ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
-                  style={{ transitionDelay: `${index * 50}ms` }}
-                  onClick={() => setIsOpen(false)} // Garante o fechamento ao clicar
-                >
-                  {link.name}
-                </Link>
-              ))}
-              
-              <div className={`pt-6 border-t border-white/10 w-full transition-opacity duration-700 delay-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
-                <p className="text-gray-500 text-sm italic mb-2">Conecte-se conosco:</p>
-                <p className="text-zentri-main font-mono text-lg">contato@zentri.agency</p>
-              </div>
-          </nav>
-      </div>
-    </header>
+    </>
   );
 };
 
