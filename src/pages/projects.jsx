@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import FadeIn from '../components/FadeIn';
-import Typewriter from '../components/Typerwriter'; // <--- Importando o efeito
+import Typewriter from '../components/Typerwriter'; 
 import { 
   X, 
   ChevronLeft, 
@@ -11,7 +11,7 @@ import {
   Smartphone 
 } from 'lucide-react';
 
-// --- DADOS DOS PROJETOS ---
+// --- DADOS DOS PROJETOS (MANTIDOS INTEGRALMENTE) ---
 const projectsData = [
   {
     id: 1,
@@ -59,29 +59,42 @@ const projectsData = [
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 
+  // Fecha o modal ao pressionar ESC
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') setSelectedProject(null);
+  }, []);
+
+  useEffect(() => {
+    if (selectedProject) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
+    } else {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedProject, handleKeyDown]);
+
   return (
     <div className="text min-h-screen pt-32 pb-20 px-4">
       
-      {/* CABEÇALHO COM TYPEWRITER */}
+      {/* CABEÇALHO (MANTIDO) */}
       <div className="max-w-7xl mx-auto text-center mb-16 relative z-10">
         <FadeIn>
             <span className="text-zentri-main font-bold tracking-widest uppercase text-xs mb-4 block">Portfólio</span>
-            
             <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight min-h-[3em] md:min-h-0">
                 Transformamos ideias em <br/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-zentri-main to-emerald-400">
-                    {/* Efeito aplicado aqui */}
                     <Typewriter text="Resultados Reais." speed={100} delay={0.5} />
                 </span>
             </h1>
-            
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
                 Explore nosso processo criativo. Clique nos projetos para ver os detalhes.
             </p>
         </FadeIn>
       </div>
 
-      {/* GRID DE PROJETOS */}
+      {/* GRID DE PROJETOS (MANTIDO) */}
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {projectsData.map((project, index) => (
             <FadeIn key={project.id} delay={index * 0.1}>
@@ -89,7 +102,6 @@ const Projects = () => {
                     onClick={() => setSelectedProject(project)}
                     className="group cursor-pointer bg-zentri-card rounded-2xl border border-white/5 overflow-hidden hover:border-zentri-main/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
                 >
-                    {/* Imagem de Capa */}
                     <div className="relative h-64 overflow-hidden">
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors z-10"></div>
                         <img 
@@ -104,7 +116,6 @@ const Projects = () => {
                         </div>
                     </div>
 
-                    {/* Resumo do Card */}
                     <div className="p-6">
                         <h3 className="text-xl font-bold text-white mb-2 group-hover:text-zentri-main transition-colors">
                             {project.title}
@@ -123,19 +134,17 @@ const Projects = () => {
         ))}
       </div>
 
-      {/* --- MODAL DA GALERIA --- */}
+      {/* MODAL DA GALERIA (AJUSTADO PARA FECHAR NO FUNDO) */}
       {selectedProject && (
         <ProjectModal 
             project={selectedProject} 
             onClose={() => setSelectedProject(null)} 
         />
       )}
-
     </div>
   );
 };
 
-// --- COMPONENTE DO MODAL (Mantido igual) ---
 const ProjectModal = ({ project, onClose }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -150,16 +159,21 @@ const ProjectModal = ({ project, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-in fade-in duration-300">
+        <div 
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md animate-in fade-in duration-300"
+          onClick={onClose} // Clique no fundo fecha o modal
+        >
             <button 
                 onClick={onClose}
-                className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-50"
+                className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-50 p-2"
             >
                 <X size={40} />
             </button>
 
-            <div className="text w-full max-w-6xl max-h-[90vh] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col lg:flex-row">
-                
+            <div 
+              className="text w-full max-w-6xl max-h-[90vh] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col lg:flex-row bg-zentri-card"
+              onClick={(e) => e.stopPropagation()} // Impede o fechamento ao clicar no conteúdo
+            >
                 {/* LADO ESQUERDO: GALERIA */}
                 <div className="lg:w-2/3 bg-black relative flex items-center justify-center group h-[40vh] lg:h-auto">
                     <img 
@@ -170,16 +184,10 @@ const ProjectModal = ({ project, onClose }) => {
                     
                     {project.gallery.length > 1 && (
                         <>
-                            <button 
-                                onClick={prevImage}
-                                className="absolute left-4 p-2 rounded-full bg-black/50 text-white hover:bg-zentri-main hover:text-black transition-all opacity-0 group-hover:opacity-100"
-                            >
+                            <button onClick={prevImage} className="absolute left-4 p-2 rounded-full bg-black/50 text-white hover:bg-zentri-main hover:text-black transition-all">
                                 <ChevronLeft size={24} />
                             </button>
-                            <button 
-                                onClick={nextImage}
-                                className="absolute right-4 p-2 rounded-full bg-black/50 text-white hover:bg-zentri-main hover:text-black transition-all opacity-0 group-hover:opacity-100"
-                            >
+                            <button onClick={nextImage} className="absolute right-4 p-2 rounded-full bg-black/50 text-white hover:bg-zentri-main hover:text-black transition-all">
                                 <ChevronRight size={24} />
                             </button>
                         </>
@@ -187,10 +195,7 @@ const ProjectModal = ({ project, onClose }) => {
 
                     <div className="absolute bottom-4 flex gap-2">
                         {project.gallery.map((_, idx) => (
-                            <div 
-                                key={idx} 
-                                className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-zentri-main w-6' : 'bg-white/30'}`}
-                            />
+                            <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-zentri-main w-6' : 'bg-white/30'}`} />
                         ))}
                     </div>
                 </div>
@@ -207,9 +212,7 @@ const ProjectModal = ({ project, onClose }) => {
                             <h4 className="text-white font-bold flex items-center gap-2 mb-2">
                                 <Layout size={18} className="text-gray-500"/> Sobre o Projeto
                             </h4>
-                            <p className="text-gray-400 text-sm leading-relaxed">
-                                {project.fullDesc}
-                            </p>
+                            <p className="text-gray-400 text-sm leading-relaxed">{project.fullDesc}</p>
                         </div>
 
                         <div>
@@ -218,24 +221,16 @@ const ProjectModal = ({ project, onClose }) => {
                             </h4>
                             <div className="flex flex-wrap gap-2">
                                 {project.tags.map(tag => (
-                                    <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-gray-300">
-                                        {tag}
-                                    </span>
+                                    <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-gray-300">{tag}</span>
                                 ))}
                             </div>
                         </div>
 
-                        <a 
-                            href={project.link} 
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-2 text-zentri-main font-bold hover:underline mt-4"
-                        >
+                        <a href={project.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-zentri-main font-bold hover:underline mt-4">
                             Ver Projeto Online <ExternalLink size={16} />
                         </a>
                     </div>
                 </div>
-
             </div>
         </div>
     );
