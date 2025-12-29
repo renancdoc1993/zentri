@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../components/Button';
 import FadeIn from '../components/FadeIn';
-import Typewriter from '../components/Typerwriter'; // <--- Importando o efeito
+import Typewriter from '../components/Typerwriter'; 
 import { 
   Target, 
   Users, 
@@ -10,26 +10,27 @@ import {
   Instagram
 } from 'lucide-react';
 
+// 1. IMPORTAÇÃO DAS IMAGENS DOS SEUS ASSETS
+import renanImg from '../assets/renan.jpg';
+import nathaliaImg from '../assets/nathalia.jpg';
+
 const About = () => {
   return (
     <div className="text min-h-screen overflow-hidden">
       
-      {/* ================= HERO: MANIFESTO (COM EFEITO) ================= */}
+      {/* ================= HERO: MANIFESTO ================= */}
       <section className="pt-32 pb-20 px-4 relative border-b border-zentri-muted/50">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-zentri-main opacity-5 blur-[100px] rounded-full"></div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
             <FadeIn>
                 <span className="text-zentri-main font-bold tracking-widest uppercase text-xs mb-4 block">Nossa Essência</span>
-                
                 <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight min-h-[3em] md:min-h-0">
                     Design de Elite. <br/>
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-zentri-main to-emerald-400">
-                        {/* Efeito aplicado aqui */}
                         <Typewriter text="Performance Real." speed={100} delay={0.5} />
                     </span>
                 </h1>
-                
                 <p className="text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
                     Unimos a ciência dos dados com a arte do visual. Sem achismos, sem excessos. Apenas o que faz o seu negócio escalar.
                 </p>
@@ -61,7 +62,6 @@ const About = () => {
             <div className="space-y-8">
                 <FadeIn direction="left">
                     <h2 className="text-3xl font-bold text-white mb-6">O "Jeito Zentri" de fazer</h2>
-                    
                     <div className="space-y-6">
                         <ValueItem 
                             icon={<Target size={24}/>}
@@ -92,18 +92,18 @@ const About = () => {
             </FadeIn>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                {/* RENAN CORDEIRO */}
+                {/* 2. USO DA VARIÁVEL renanImg NO COMPONENTE */}
                 <TeamMember 
-                    img="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400" 
+                    img={renanImg} 
                     name="Renan Cordeiro"
                     role="Head of Design"
                     bio="Designer formado com mais de 5 anos de experiência liderando projetos visuais de alto impacto."
                 />
                 
-                {/* SÓCIA MARKETING */}
+                {/* 3. USO DA VARIÁVEL nathaliaImg NO COMPONENTE */}
                 <TeamMember 
-                    img="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400" 
-                    name="Nome da Sócia"
+                    img={nathaliaImg} 
+                    name="Nathalia Dias"
                     role="Head of Marketing"
                     bio="Especialista formada em Marketing, atuando há mais de 5 anos com estratégias de crescimento e mercado."
                 />
@@ -120,7 +120,6 @@ const About = () => {
             </div>
         </FadeIn>
       </section>
-
     </div>
   );
 };
@@ -149,6 +148,7 @@ const ValueItem = ({ icon, title, desc }) => (
 const TeamMember = ({ img, name, role, bio }) => (
     <FadeIn className="bg-zentri-card p-6 rounded-2xl border border-white/5 hover:border-zentri-main/50 transition-all group text-left flex flex-col sm:flex-row gap-6 items-center sm:items-start">
         <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-white/10 shrink-0">
+            {/* O atributo src recebe a variável importada diretamente */}
             <img src={img} alt={name} className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" />
         </div>
         <div>
