@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    /* FORÇA O FUNDO PRETO E TEXTO VERDE NO SITE INTEIRO */
+    background-color: #020408; /* Cor escura padrão (Zentri Dark) */
+    color: #ffffff;
+    overflow-x: hidden; /* Evita rolagem lateral indesejada */
+  }
+
+  /* Mudando a cor da seleção do mouse */
+  ::selection {
+    background-color: #00dc82; /* Verde Neon */
+    color: #000;
+  }
+}
+
+/* Barra de rolagem estilizada em verde */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00dc82;
+}
