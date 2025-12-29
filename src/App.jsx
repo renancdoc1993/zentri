@@ -13,11 +13,15 @@ import Projects from './pages/Projects';
 import Services from './pages/Services';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import FloatingWhatsApp from './components/FloatingWhatsApp';
 
 function App() {
   return (
     <Router basename='/zentri/'>
       <ScrollToTop />
+
+       {/* Wpp Button */}
+      <FloatingWhatsApp />
       
       {/* Fundo Tecnológico */}
       <TechBackground />

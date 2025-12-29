@@ -9,19 +9,21 @@ const TechBackground = () => {
     let animationFrameId;
     let w, h;
     let particles = [];
+    
+    // Verifica se é dispositivo móvel (menor que 768px)
+    const isMobile = window.innerWidth < 768;
 
     let mouse = {
       x: undefined,
       y: undefined,
-      radius: 120 // Raio do "holofote" do mouse
+      radius: isMobile ? 80 : 150 // Raio menor no mobile
     };
 
-    // Configurações Ultra-Minimalistas
     const config = {
       baseColor: '0, 220, 130', // Verde Zentri
-      particleCount: 80,        // Quantidade equilibrada
-      baseSize: 1.2,            // Partículas bem pequenas (fino)
-      speed: 0.2,               // Movimento muito lento e elegante
+      particleCount: isMobile ? 40 : 80, // Menos partículas no mobile para não travar
+      baseSize: isMobile ? 1.5 : 1.2, // Um pouco maiores no mobile para ver melhor
+      speed: 0.2,
     };
 
     class Particle {
@@ -33,50 +35,71 @@ const TechBackground = () => {
         this.size = Math.random() * config.baseSize + 0.5;
         this.initialSize = this.size;
         
-        // Cada partícula tem um "brilho" próprio que pulsa
-        this.alpha = Math.random() * 0.1 + 0.05; // Opacidade base muito baixa (5% a 15%)
+        // No mobile, a opacidade base é maior (para ver sem tocar)
+        // No desktop, começa quase invisível
+        this.alpha = isMobile ? Math.random() * 0.3 + 0.1 : Math.random() * 0.1 + 0.05;
         this.targetAlpha = this.alpha;
+        
+        // Variação para "piscar" no mobile
+        this.pulseSpeed = Math.random() * 0.02 + 0.005;
+        this.pulseDirection = 1;
       }
 
       update() {
         this.x += this.vx;
         this.y += this.vy;
 
-        // Rebater suavemente nas bordas
+        // Rebater nas bordas
         if (this.x < 0 || this.x > w) this.vx *= -1;
         if (this.y < 0 || this.y > h) this.vy *= -1;
 
-        // INTERAÇÃO COM O MOUSE
+        // INTERAÇÃO (Mouse ou Toque)
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < mouse.radius) {
-            // Se o mouse estiver perto: Aumenta opacidade e tamanho levemente
-            this.targetAlpha = 0.8; // Brilho forte
+        // Lógica de Interação
+        if (mouse.x && distance < mouse.radius) {
+            // Se tocar/passar mouse: Brilho Máximo
+            this.targetAlpha = 0.9; 
             const sizeFactor = (mouse.radius - distance) / mouse.radius;
-            this.size = this.initialSize + (sizeFactor * 2); // Cresce um pouco
+            this.size = this.initialSize + (sizeFactor * 3);
         } else {
-            // Se longe: Volta ao estado "fantasma"
-            this.targetAlpha = Math.random() * 0.1 + 0.05;
-            this.size = this.initialSize;
+            // Se estiver longe (ou sem toque)
+            if (isMobile) {
+                // Lógica MOBILE: "Respiração" (Twinkle)
+                // Faz a partícula brilhar e apagar suavemente sozinha
+                this.alpha += this.pulseSpeed * this.pulseDirection;
+                
+                if (this.alpha >= 0.5) this.pulseDirection = -1;
+                if (this.alpha <= 0.1) this.pulseDirection = 1;
+                
+                this.targetAlpha = this.alpha; // Mantém o ciclo
+                this.size = this.initialSize;
+            } else {
+                // Lógica DESKTOP: Volta a ficar quase invisível
+                this.targetAlpha = Math.random() * 0.1 + 0.05;
+                this.size = this.initialSize;
+            }
         }
 
-        // Transição suave da opacidade (Lerp)
-        this.alpha += (this.targetAlpha - this.alpha) * 0.1;
+        // Suavização da transição de opacidade (apenas para desktop ou interação)
+        if (!isMobile || (mouse.x && distance < mouse.radius)) {
+            this.alpha += (this.targetAlpha - this.alpha) * 0.1;
+        }
       }
 
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        // Usa sombra para criar o efeito de "Glow" (Neon)
-        ctx.shadowBlur = 10; 
+        
+        // Sombra (Glow)
+        ctx.shadowBlur = isMobile ? 5 : 10; // Menos glow no mobile para performance
         ctx.shadowColor = `rgba(${config.baseColor}, ${this.alpha})`;
         
         ctx.fillStyle = `rgba(${config.baseColor}, ${this.alpha})`;
         ctx.fill();
         
-        // Reseta sombra para não pesar a performance
         ctx.shadowBlur = 0;
       }
     }
@@ -85,7 +108,9 @@ const TechBackground = () => {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
       particles = [];
-      const amount = window.innerWidth < 768 ? 40 : config.particleCount;
+      // Recalcula quantidade baseada na tela atual
+      const amount = window.innerWidth < 768 ? 40 : 80;
+      
       for (let i = 0; i < amount; i++) {
         particles.push(new Particle());
       }
@@ -100,19 +125,31 @@ const TechBackground = () => {
       animationFrameId = requestAnimationFrame(animate);
     };
 
+    // Listeners para Mouse (Desktop)
     const handleMouseMove = (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
+        mouse.x = e.clientX; // Usar clientX é mais seguro com position fixed
+        mouse.y = e.clientY;
     };
 
-    const handleMouseLeave = () => {
+    // Listeners para Toque (Mobile)
+    const handleTouchMove = (e) => {
+        if(e.touches.length > 0) {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+        }
+    };
+
+    const handleLeave = () => {
         mouse.x = undefined;
         mouse.y = undefined;
     };
 
     window.addEventListener('resize', init);
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseout', handleMouseLeave);
+    window.addEventListener('touchmove', handleTouchMove); // Adiciona suporte a toque
+    window.addEventListener('touchstart', handleTouchMove); // Reage ao primeiro toque
+    window.addEventListener('mouseout', handleLeave);
+    window.addEventListener('touchend', handleLeave);
     
     init();
     animate();
@@ -120,7 +157,10 @@ const TechBackground = () => {
     return () => {
       window.removeEventListener('resize', init);
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseout', handleMouseLeave);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchstart', handleTouchMove);
+      window.removeEventListener('mouseout', handleLeave);
+      window.removeEventListener('touchend', handleLeave);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
