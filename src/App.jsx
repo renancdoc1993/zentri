@@ -1,29 +1,29 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Componentes (Caminhos corrigidos)
+// Componentes
 import Header from './components/Header';
 import Footer from './components/footer';
 import TechBackground from './components/TechBackground';
 import ScrollToTop from './components/ScrolltoTop';
 
-// Páginas
+// TROCA AQUI: Sai o FloatingWhatsApp e entra o Chatbox
+import Chatbox from './components/Chatbox'; 
+
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import Services from './pages/Services';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import FloatingWhatsApp from './components/FloatingWhatsApp';
 
 function App() {
   return (
-    <Router basename='/zentri/'>
+    <Router basename="/zentri">
       <ScrollToTop />
-
-       {/* Wpp Button */}
-      <FloatingWhatsApp />
       
-      {/* Fundo Tecnológico */}
+      {/* CHATBOX INTELIGENTE AQUI */}
+      <Chatbox />
+
       <TechBackground />
       
       <div className="relative z-10 font-sans text-white">
