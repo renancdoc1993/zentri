@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '../components/Button';
 import FadeIn from '../components/FadeIn';
 import Typewriter from '../components/Typerwriter';
+import SpotlightEffect from '../components/SpotlightEffect';
 import { 
   Palette,       
   MonitorSmartphone, 
@@ -15,21 +16,96 @@ import {
   Star
 } from 'lucide-react';
 
+// --- DADOS (Separação de conteúdo) ---
+
+const SERVICES_DATA = [
+  {
+    id: 1,
+    icon: <Palette className="text-zentri-main" size={32} aria-hidden="true" />,
+    title: "UI & Branding",
+    desc: "Criamos identidades visuais que transmitem autoridade e interfaces (UI) que encantam o usuário à primeira vista."
+  },
+  {
+    id: 2,
+    icon: <MonitorSmartphone className="text-zentri-main" size={32} aria-hidden="true" />,
+    title: "Web Design & Dev",
+    desc: "Sites desenvolvidos em React e tecnologias modernas. Rápidos, responsivos e preparados para SEO."
+  },
+  {
+    id: 3,
+    icon: <Layers className="text-zentri-main" size={32} aria-hidden="true" />,
+    title: "UX Research",
+    desc: "Mapeamos a jornada do seu cliente para eliminar fricções e aumentar a taxa de conversão das suas páginas."
+  },
+  {
+    id: 4,
+    icon: <Rocket className="text-zentri-main" size={32} aria-hidden="true" />,
+    title: "Gestão de Tráfego",
+    desc: "Campanhas de alta performance no Google e Meta Ads, agora direcionadas para páginas visualmente perfeitas."
+  },
+  {
+    id: 5,
+    icon: <MousePointer2 className="text-zentri-main" size={32} aria-hidden="true" />,
+    title: "CRO (Otimização)",
+    desc: "Design orientado a dados. Usamos mapas de calor e testes A/B para melhorar o design continuamente."
+  },
+  {
+    id: 6,
+    icon: <Code2 className="text-zentri-main" size={32} aria-hidden="true" />,
+    title: "Soluções No-Code",
+    desc: "Agilidade na entrega com Webflow ou Framer quando seu projeto precisa estar no ar 'para ontem'."
+  }
+];
+
+const TESTIMONIALS_DATA = [
+  {
+    id: 1,
+    quote: "A Zentri não só melhorou nosso tráfego, mas refez toda a jornada de compra do site. O resultado foi um aumento de 3x no faturamento em 4 meses.",
+    highlight: "3x no faturamento",
+    author: "Roberto Alves",
+    role: "CEO, FinTech One",
+    img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200"
+  },
+  {
+    id: 2,
+    quote: "Estávamos cansados de agências que só entregavam relatórios bonitos. A equipe da Zentri é técnica, focada em ROI e o design que eles entregam é impecável.",
+    highlight: "impecável",
+    author: "Carla Mendes",
+    role: "CMO, Urban Style",
+    img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200"
+  },
+  {
+    id: 3,
+    quote: "Contratamos para o tráfego, mas o redesign da nossa Landing Page foi o que virou o jogo. A taxa de conversão subiu de 2% para 7% em uma semana.",
+    highlight: "uma semana",
+    author: "Marcos Diniz",
+    role: "Fundador, SaaS Hub",
+    img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200"
+  }
+];
+
+const PROCESS_CHECKLIST = [
+    "Diagnóstico de UX/UI do seu site atual",
+    "Redesign focado em conversão",
+    "Implementação de campanhas de tráfego"
+];
+
 const Home = () => {
   return (
-    <div className="overflow-hidden">
+    // <main> envolve todo o conteúdo principal da página
+    <main className="overflow-hidden">
+      <SpotlightEffect />
       
       {/* ================= HERO SECTION ================= */}
-      <section className="relative min-h-[90vh] flex flex-col justify-center items-center text-center text pt-32 pb-40 px-4 border-b border-zentri-muted/50 overflow-hidden">
+      <section aria-label="Introdução" className="relative min-h-[90vh] flex flex-col justify-center items-center text-center text pt-32 pb-40 px-4 border-b border-zentri-muted/50 overflow-hidden">
         
-        {/* Background Tecnológico */}
-        <div className="absolute inset-0 z-0">
+        {/* Background Decorativo (aria-hidden para ignorar em leitores de tela) */}
+        <div className="absolute inset-0 z-0" aria-hidden="true">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20"></div>
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-zentri-main opacity-10 blur-[120px] rounded-full"></div>
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto">
-            
             <FadeIn direction="down">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zentri-main/30 bg-zentri-main/5 text-zentri-main text-xs font-bold tracking-widest uppercase mb-8">
                 <span className="w-2 h-2 rounded-full bg-zentri-main animate-pulse"></span>
@@ -38,11 +114,9 @@ const Home = () => {
             </FadeIn>
 
             <FadeIn direction="up" delay={0.1}>
-              {/* min-h garante que a altura não pule enquanto digita */}
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white tracking-tight mb-8 leading-tight min-h-[1.2em]">
                 Não crie apenas tráfego.<br />
                 <span className="text-gray-400">Crie </span>
-                {/* EFEITO DE DIGITAÇÃO */}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-zentri-main to-emerald-400">
                     <Typewriter text="Experiências." speed={120} delay={0.8} />
                 </span>
@@ -69,17 +143,19 @@ const Home = () => {
             </FadeIn>
 
              <FadeIn direction="up" delay={0.6} className="mt-24 pt-10 border-t border-white/5 flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500 font-medium text-sm md:text-base">
-                <span className="flex items-center gap-2 hover:text-white transition-colors"><CheckCircle2 size={18} className="text-zentri-main"/> User Experience (UX)</span>
-                <span className="flex items-center gap-2 hover:text-white transition-colors"><CheckCircle2 size={18} className="text-zentri-main"/> User Interface (UI)</span>
-                <span className="flex items-center gap-2 hover:text-white transition-colors"><CheckCircle2 size={18} className="text-zentri-main"/> Web Development</span>
-                <span className="flex items-center gap-2 hover:text-white transition-colors"><CheckCircle2 size={18} className="text-zentri-main"/> Performance Ads</span>
+                {/* Itens decorativos de skills */}
+                {['User Experience (UX)', 'User Interface (UI)', 'Web Development', 'Performance Ads'].map((skill) => (
+                    <span key={skill} className="flex items-center gap-2 hover:text-white transition-colors">
+                        <CheckCircle2 size={18} className="text-zentri-main" aria-hidden="true"/> {skill}
+                    </span>
+                ))}
             </FadeIn>
         </div>
       </section>
 
 
       {/* ================= SEÇÃO DE SERVIÇOS ================= */}
-      <section className="py-32 bg-black relative">
+      <section aria-label="Nossos Serviços" className="py-32 bg-black relative">
         <div className="max-w-7xl mx-auto px-4">
             <FadeIn className="text-center mb-24">
                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Design Estratégico & Tráfego</h2>
@@ -88,81 +164,45 @@ const Home = () => {
                 </p>
             </FadeIn>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <FadeIn delay={0.1}>
-                    <FeatureCard 
-                        icon={<Palette className="text-zentri-main" size={32} />}
-                        title="UI & Branding"
-                        desc="Criamos identidades visuais que transmitem autoridade e interfaces (UI) que encantam o usuário à primeira vista."
-                    />
-                </FadeIn>
-
-                <FadeIn delay={0.2}>
-                    <FeatureCard 
-                        icon={<MonitorSmartphone className="text-zentri-main" size={32} />}
-                        title="Web Design & Dev"
-                        desc="Sites desenvolvidos em React e tecnologias modernas. Rápidos, responsivos e preparados para SEO."
-                    />
-                </FadeIn>
-
-                <FadeIn delay={0.3}>
-                    <FeatureCard 
-                        icon={<Layers className="text-zentri-main" size={32} />}
-                        title="UX Research"
-                        desc="Mapeamos a jornada do seu cliente para eliminar fricções e aumentar a taxa de conversão das suas páginas."
-                    />
-                </FadeIn>
-
-                <FadeIn delay={0.4}>
-                    <FeatureCard 
-                        icon={<Rocket className="text-zentri-main" size={32} />}
-                        title="Gestão de Tráfego"
-                        desc="Campanhas de alta performance no Google e Meta Ads, agora direcionadas para páginas visualmente perfeitas."
-                    />
-                </FadeIn>
-
-                <FadeIn delay={0.5}>
-                    <FeatureCard 
-                        icon={<MousePointer2 className="text-zentri-main" size={32} />}
-                        title="CRO (Otimização)"
-                        desc="Design orientado a dados. Usamos mapas de calor e testes A/B para melhorar o design continuamente."
-                    />
-                </FadeIn>
-
-                <FadeIn delay={0.6}>
-                    <FeatureCard 
-                        icon={<Code2 className="text-zentri-main" size={32} />}
-                        title="Soluções No-Code"
-                        desc="Agilidade na entrega com Webflow ou Framer quando seu projeto precisa estar no ar 'para ontem'."
-                    />
-                </FadeIn>
-            </div>
+            {/* Lista semântica de artigos */}
+            <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {SERVICES_DATA.map((service, index) => (
+                    <li key={service.id}>
+                        <FadeIn delay={index * 0.1} className="h-full">
+                            <FeatureCard 
+                                icon={service.icon}
+                                title={service.title}
+                                desc={service.desc}
+                            />
+                        </FadeIn>
+                    </li>
+                ))}
+            </ul>
         </div>
       </section>
 
       {/* ================= PROCESSO VISUAL ================= */}
-      <section className="py-32 text border-y border-zentri-muted overflow-hidden">
+      <section aria-label="Nosso Processo" className="py-32 text border-y border-zentri-muted overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
             
             <FadeIn direction="right">
-                <div className="relative group cursor-pointer">
-                    <div className="absolute -inset-4 bg-gradient-to-r from-zentri-main to-purple-600 opacity-20 blur-xl rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
+                <figure className="relative group cursor-pointer">
+                    <div className="absolute -inset-4 bg-gradient-to-r from-zentri-main to-purple-600 opacity-20 blur-xl rounded-full group-hover:opacity-40 transition-opacity duration-500" aria-hidden="true"></div>
                     <img 
                         src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&q=80&w=1000" 
-                        alt="Processo de UX Design" 
-                        className="relative rounded-2xl border border-white/10 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700"
+                        alt="Equipe analisando wireframes de UX Design em uma mesa" 
+                        className="relative rounded-2xl border border-white/10 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700 w-full"
                     />
-                    <div className="absolute -bottom-6 -right-6 bg-black p-6 rounded-xl border border-zentri-muted shadow-2xl max-w-xs">
+                    <figcaption className="absolute -bottom-6 -right-6 bg-black p-6 rounded-xl border border-zentri-muted shadow-2xl max-w-xs">
                         <p className="text-zentri-main font-bold mb-1">Processo Integrado</p>
                         <p className="text-white text-sm">Design e Mídia sentados na mesma mesa.</p>
-                    </div>
-                </div>
+                    </figcaption>
+                </figure>
             </FadeIn>
 
             <FadeIn direction="left">
                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
                     A beleza importa.<br/>
-                    {/* TÍTULO COM GRADIENTE CORRIGIDO */}
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-zentri-main to-emerald-400">
                         Mas o resultado importa mais.
                     </span>
@@ -175,28 +215,26 @@ const Home = () => {
                 </p>
                 
                 <ul className="space-y-4">
-                    {[
-                        "Diagnóstico de UX/UI do seu site atual",
-                        "Redesign focado em conversão",
-                        "Implementação de campanhas de tráfego"
-                    ].map((item, i) => (
+                    {PROCESS_CHECKLIST.map((item, i) => (
                         <li key={i} className="flex items-center space-x-3 text-white font-medium">
-                            <div className="w-6 h-6 rounded-full bg-zentri-main/20 flex items-center justify-center text-zentri-main text-xs">✓</div>
+                            <div className="w-6 h-6 rounded-full bg-zentri-main/20 flex items-center justify-center text-zentri-main text-xs shrink-0" aria-hidden="true">✓</div>
                             <span>{item}</span>
                         </li>
                     ))}
                 </ul>
 
-                <Button to="/contact" className="mt-10">Agendar Diagnóstico Visual</Button>
+                <div className="mt-10">
+                   <Button to="/contact">Agendar Diagnóstico Visual</Button>
+                </div>
             </FadeIn>
 
         </div>
       </section>
 
       {/* ================= DEPOIMENTOS ================= */}
-      <section className="py-32 bg-black relative overflow-hidden">
+      <section aria-label="Depoimentos de Clientes" className="py-32 bg-black relative overflow-hidden">
         {/* Glow de Fundo Sutil */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-zentri-main opacity-5 blur-[120px] rounded-full"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-zentri-main opacity-5 blur-[120px] rounded-full pointer-events-none" aria-hidden="true"></div>
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
             <FadeIn className="text-center mb-20">
@@ -208,88 +246,47 @@ const Home = () => {
                 </p>
             </FadeIn>
             
-            <div className="grid md:grid-cols-3 gap-8">
-                {/* Depoimento 1 */}
-                <FadeIn delay={0.1}>
-                   <div className="text p-10 rounded-3xl border border-zentri-muted hover:border-zentri-main/50 transition-colors h-full flex flex-col relative group">
-                      <span className="absolute top-6 right-8 text-6xl text-zentri-muted opacity-20 font-serif group-hover:text-zentri-main group-hover:opacity-100 transition-all duration-500">"</span>
-                      
-                      <div className="flex gap-1 mb-6">
-                        {[1,2,3,4,5].map(star => (
-                            <Star key={star} size={18} className="text-zentri-main fill-zentri-main" />
-                        ))}
-                      </div>
-                      <p className="text-gray-300 mb-8 flex-grow leading-relaxed text-lg">
-                        "A Zentri não só melhorou nosso tráfego, mas refez toda a jornada de compra do site. O resultado foi um aumento de <strong className="text-white">3x no faturamento</strong> em 4 meses."
-                      </p>
-                      <div className="flex items-center gap-4 mt-auto">
-                        <div className="w-12 h-12 rounded-full bg-gray-800 overflow-hidden border border-white/10">
-                          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200" alt="Cliente 1" className="w-full h-full object-cover"/>
-                        </div>
-                        <div>
-                          <p className="text-white font-bold">Roberto Alves</p>
-                          <p className="text-zentri-text text-xs uppercase tracking-wider">CEO, FinTech One</p>
-                        </div>
-                      </div>
-                   </div>
-                </FadeIn>
+            {/* Lista de Depoimentos usando tags semânticas (figure/blockquote) */}
+            <ul className="grid md:grid-cols-3 gap-8">
+                {TESTIMONIALS_DATA.map((t, index) => (
+                    <li key={t.id}>
+                        <FadeIn delay={0.1 + (index * 0.1)} className="h-full">
+                             <figure className="text p-10 rounded-3xl border border-zentri-muted hover:border-zentri-main/50 transition-colors h-full flex flex-col relative group">
+                                <span className="absolute top-6 right-8 text-6xl text-zentri-muted opacity-20 font-serif group-hover:text-zentri-main group-hover:opacity-100 transition-all duration-500 select-none">"</span>
+                                
+                                <div className="flex gap-1 mb-6" aria-label="Avaliação de 5 estrelas">
+                                    {[1,2,3,4,5].map(star => (
+                                        <Star key={star} size={18} className="text-zentri-main fill-zentri-main" aria-hidden="true" />
+                                    ))}
+                                </div>
 
-                {/* Depoimento 2 */}
-                <FadeIn delay={0.3}>
-                   <div className="text p-10 rounded-3xl border border-zentri-muted hover:border-zentri-main/50 transition-colors h-full flex flex-col relative group">
-                      <span className="absolute top-6 right-8 text-6xl text-zentri-muted opacity-20 font-serif group-hover:text-zentri-main group-hover:opacity-100 transition-all duration-500">"</span>
-                      
-                      <div className="flex gap-1 mb-6">
-                        {[1,2,3,4,5].map(star => (
-                            <Star key={star} size={18} className="text-zentri-main fill-zentri-main" />
-                        ))}
-                      </div>
-                      <p className="text-gray-300 mb-8 flex-grow leading-relaxed text-lg">
-                        "Estávamos cansados de agências que só entregavam relatórios bonitos. A equipe da Zentri é técnica, focada em ROI e o design que eles entregam é <strong className="text-white">impecável</strong>."
-                      </p>
-                      <div className="flex items-center gap-4 mt-auto">
-                        <div className="w-12 h-12 rounded-full bg-gray-800 overflow-hidden border border-white/10">
-                          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200" alt="Cliente 2" className="w-full h-full object-cover"/>
-                        </div>
-                        <div>
-                          <p className="text-white font-bold">Carla Mendes</p>
-                          <p className="text-zentri-text text-xs uppercase tracking-wider">CMO, Urban Style</p>
-                        </div>
-                      </div>
-                   </div>
-                </FadeIn>
+                                <blockquote className="text-gray-300 mb-8 flex-grow leading-relaxed text-lg">
+                                    {/* Dividimos o texto para aplicar negrito na parte de destaque */}
+                                    "{t.quote.split(t.highlight)[0]} 
+                                    <strong className="text-white">{t.highlight}</strong> 
+                                    {t.quote.split(t.highlight)[1]}"
+                                </blockquote>
 
-                {/* Depoimento 3 */}
-                <FadeIn delay={0.5}>
-                   <div className="text p-10 rounded-3xl border border-zentri-muted hover:border-zentri-main/50 transition-colors h-full flex flex-col relative group">
-                      <span className="absolute top-6 right-8 text-6xl text-zentri-muted opacity-20 font-serif group-hover:text-zentri-main group-hover:opacity-100 transition-all duration-500">"</span>
-                      
-                      <div className="flex gap-1 mb-6">
-                        {[1,2,3,4,5].map(star => (
-                            <Star key={star} size={18} className="text-zentri-main fill-zentri-main" />
-                        ))}
-                      </div>
-                      <p className="text-gray-300 mb-8 flex-grow leading-relaxed text-lg">
-                        "Contratamos para o tráfego, mas o redesign da nossa Landing Page foi o que virou o jogo. A taxa de conversão subiu de 2% para 7% em <strong className="text-white">uma semana</strong>."
-                      </p>
-                      <div className="flex items-center gap-4 mt-auto">
-                        <div className="w-12 h-12 rounded-full bg-gray-800 overflow-hidden border border-white/10">
-                          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" alt="Cliente 3" className="w-full h-full object-cover"/>
-                        </div>
-                        <div>
-                          <p className="text-white font-bold">Marcos Diniz</p>
-                          <p className="text-zentri-text text-xs uppercase tracking-wider">Fundador, SaaS Hub</p>
-                        </div>
-                      </div>
-                   </div>
-                </FadeIn>
-            </div>
+                                <figcaption className="flex items-center gap-4 mt-auto">
+                                    <div className="w-12 h-12 rounded-full bg-gray-800 overflow-hidden border border-white/10 shrink-0">
+                                        <img src={t.img} alt={`Foto de ${t.author}`} className="w-full h-full object-cover"/>
+                                    </div>
+                                    <div>
+                                        <cite className="text-white font-bold not-italic block">{t.author}</cite>
+                                        <span className="text-zentri-text text-xs uppercase tracking-wider">{t.role}</span>
+                                    </div>
+                                </figcaption>
+                            </figure>
+                        </FadeIn>
+                    </li>
+                ))}
+            </ul>
         </div>
       </section>
 
       {/* ================= CTA FINAL ================= */}
-      <section className="py-32 relative text-center px-4">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zentri-main/10 via-black to-black"></div>
+      <section aria-label="Chamada para Ação" className="py-32 relative text-center px-4">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zentri-main/10 via-black to-black pointer-events-none" aria-hidden="true"></div>
         
         <FadeIn direction="up" className="relative z-10 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-8 tracking-tight">
@@ -301,24 +298,27 @@ const Home = () => {
             </p>
             <div className="flex justify-center gap-4">
                <Button to="/projects" className="px-10 py-4 text-lg bg-white text-black hover:bg-zentri-main hover:text-black">
-                  Ver Portfólio <ArrowRight className="ml-2"/>
+                  Ver Portfólio <ArrowRight className="ml-2" size={20} aria-hidden="true"/>
                </Button>
             </div>
         </FadeIn>
       </section>
 
-    </div>
+    </main>
   );
 };
 
+// --- SUB-COMPONENTES ---
+
+// Agora usando <article> pois é um item independente de informação
 const FeatureCard = ({ icon, title, desc }) => (
-    <div className="group p-8 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-zentri-main/50 rounded-2xl transition-all duration-300">
+    <article className="group p-8 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-zentri-main/50 rounded-2xl transition-all duration-300 h-full">
         <div className="mb-6 p-3 bg-black rounded-lg w-fit group-hover:scale-110 transition-transform duration-300 border border-white/10">
             {icon}
         </div>
         <h3 className="text-xl font-bold text-white mb-3 group-hover:text-zentri-main transition-colors">{title}</h3>
         <p className="text-zentri-text opacity-60 text-sm leading-relaxed">{desc}</p>
-    </div>
+    </article>
 );
 
 export default Home;

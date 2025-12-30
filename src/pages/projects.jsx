@@ -7,12 +7,11 @@ import {
   ChevronRight, 
   ExternalLink, 
   Layers, 
-  Layout, 
-  Smartphone 
+  Layout 
 } from 'lucide-react';
 
-// --- DADOS DOS PROJETOS (MANTIDOS INTEGRALMENTE) ---
-const projectsData = [
+// --- DADOS DOS PROJETOS ---
+const PROJECTS_DATA = [
   {
     id: 1,
     category: "App Mobile",
@@ -76,10 +75,10 @@ const Projects = () => {
   }, [selectedProject, handleKeyDown]);
 
   return (
-    <div className="text min-h-screen pt-32 pb-20 px-4">
+    <main className="text min-h-screen pt-32 pb-20 px-4">
       
-      {/* CABEÇALHO (MANTIDO) */}
-      <div className="max-w-7xl mx-auto text-center mb-16 relative z-10">
+      {/* CABEÇALHO */}
+      <header className="max-w-7xl mx-auto text-center mb-16 relative z-10">
         <FadeIn>
             <span className="text-zentri-main font-bold tracking-widest uppercase text-xs mb-4 block">Portfólio</span>
             <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight min-h-[3em] md:min-h-0">
@@ -92,13 +91,13 @@ const Projects = () => {
                 Explore nosso processo criativo. Clique nos projetos para ver os detalhes.
             </p>
         </FadeIn>
-      </div>
+      </header>
 
-      {/* GRID DE PROJETOS (MANTIDO) */}
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {projectsData.map((project, index) => (
+      {/* GRID DE PROJETOS */}
+      <section className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {PROJECTS_DATA.map((project, index) => (
             <FadeIn key={project.id} delay={index * 0.1}>
-                <div 
+                <article 
                     onClick={() => setSelectedProject(project)}
                     className="group cursor-pointer bg-zentri-card rounded-2xl border border-white/5 overflow-hidden hover:border-zentri-main/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
                 >
@@ -106,7 +105,7 @@ const Projects = () => {
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors z-10"></div>
                         <img 
                             src={project.gallery[0]} 
-                            alt={project.title} 
+                            alt={`Capa do projeto ${project.title}`} 
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute top-4 left-4 z-20">
@@ -129,19 +128,19 @@ const Projects = () => {
                             ))}
                         </div>
                     </div>
-                </div>
+                </article>
             </FadeIn>
         ))}
-      </div>
+      </section>
 
-      {/* MODAL DA GALERIA (AJUSTADO PARA FECHAR NO FUNDO) */}
+      {/* MODAL DA GALERIA */}
       {selectedProject && (
         <ProjectModal 
             project={selectedProject} 
             onClose={() => setSelectedProject(null)} 
         />
       )}
-    </div>
+    </main>
   );
 };
 
@@ -160,39 +159,47 @@ const ProjectModal = ({ project, onClose }) => {
 
     return (
         <div 
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md animate-in fade-in duration-300"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-2 md:p-4 bg-black/95 backdrop-blur-md animate-in fade-in duration-300"
           onClick={onClose} // Clique no fundo fecha o modal
         >
+            {/* BOTÃO FECHAR FLUTUANTE (Corrigido para Mobile) */}
             <button 
-                onClick={onClose}
-                className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-50 p-2"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                }}
+                className="fixed top-4 right-4 z-[110] p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-zentri-main hover:text-black transition-all shadow-lg active:scale-95"
+                aria-label="Fechar Galeria"
             >
-                <X size={40} />
+                <X size={24} strokeWidth={3} />
             </button>
 
+            {/* CARD PRINCIPAL */}
             <div 
-              className="text w-full max-w-6xl max-h-[90vh] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col lg:flex-row bg-zentri-card"
+              className="relative w-full max-w-6xl max-h-[90vh] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col lg:flex-row bg-zentri-card"
               onClick={(e) => e.stopPropagation()} // Impede o fechamento ao clicar no conteúdo
             >
                 {/* LADO ESQUERDO: GALERIA */}
-                <div className="lg:w-2/3 bg-black relative flex items-center justify-center group h-[40vh] lg:h-auto">
+                <div className="lg:w-2/3 bg-black relative flex items-center justify-center group h-[40vh] lg:h-auto border-b lg:border-b-0 lg:border-r border-white/10">
                     <img 
                         src={project.gallery[currentImageIndex]} 
-                        alt={`Tela ${currentImageIndex + 1}`} 
+                        alt={`Tela ${currentImageIndex + 1} do projeto`} 
                         className="max-w-full max-h-full object-contain"
                     />
                     
+                    {/* Botões de Navegação (Escondidos se tiver só 1 foto) */}
                     {project.gallery.length > 1 && (
                         <>
-                            <button onClick={prevImage} className="absolute left-4 p-2 rounded-full bg-black/50 text-white hover:bg-zentri-main hover:text-black transition-all">
+                            <button onClick={prevImage} className="absolute left-4 p-3 rounded-full bg-black/50 text-white hover:bg-zentri-main hover:text-black transition-all backdrop-blur-sm border border-white/10">
                                 <ChevronLeft size={24} />
                             </button>
-                            <button onClick={nextImage} className="absolute right-4 p-2 rounded-full bg-black/50 text-white hover:bg-zentri-main hover:text-black transition-all">
+                            <button onClick={nextImage} className="absolute right-4 p-3 rounded-full bg-black/50 text-white hover:bg-zentri-main hover:text-black transition-all backdrop-blur-sm border border-white/10">
                                 <ChevronRight size={24} />
                             </button>
                         </>
                     )}
 
+                    {/* Indicadores (Bolinhas) */}
                     <div className="absolute bottom-4 flex gap-2">
                         {project.gallery.map((_, idx) => (
                             <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-zentri-main w-6' : 'bg-white/30'}`} />
@@ -201,33 +208,40 @@ const ProjectModal = ({ project, onClose }) => {
                 </div>
 
                 {/* LADO DIREITO: INFORMAÇÕES */}
-                <div className="lg:w-1/3 p-8 lg:p-10 overflow-y-auto">
-                    <div className="mb-6">
-                        <h2 className="text-3xl font-bold text-white mb-2">{project.title}</h2>
-                        <span className="text-zentri-main text-sm font-bold tracking-wider uppercase">{project.category}</span>
+                <div className="lg:w-1/3 p-6 lg:p-10 overflow-y-auto">
+                    <div className="mb-6 pt-4 lg:pt-0">
+                        <span className="text-zentri-main text-xs font-bold tracking-wider uppercase mb-2 block">{project.category}</span>
+                        <h2 className="text-2xl lg:text-3xl font-bold text-white">{project.title}</h2>
                     </div>
 
                     <div className="space-y-6">
                         <div>
-                            <h4 className="text-white font-bold flex items-center gap-2 mb-2">
-                                <Layout size={18} className="text-gray-500"/> Sobre o Projeto
+                            <h4 className="text-white font-bold flex items-center gap-2 mb-2 text-sm">
+                                <Layout size={18} className="text-gray-500" aria-hidden="true"/> Sobre o Projeto
                             </h4>
                             <p className="text-gray-400 text-sm leading-relaxed">{project.fullDesc}</p>
                         </div>
 
                         <div>
-                            <h4 className="text-white font-bold flex items-center gap-2 mb-2">
-                                <Layers size={18} className="text-gray-500"/> Tecnologias
+                            <h4 className="text-white font-bold flex items-center gap-2 mb-2 text-sm">
+                                <Layers size={18} className="text-gray-500" aria-hidden="true"/> Tecnologias
                             </h4>
                             <div className="flex flex-wrap gap-2">
                                 {project.tags.map(tag => (
-                                    <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-gray-300">{tag}</span>
+                                    <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-gray-300 font-mono">
+                                        {tag}
+                                    </span>
                                 ))}
                             </div>
                         </div>
 
-                        <a href={project.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-zentri-main font-bold hover:underline mt-4">
-                            Ver Projeto Online <ExternalLink size={16} />
+                        <a 
+                            href={project.link} 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            className="inline-flex w-full items-center justify-center gap-2 bg-zentri-main text-black py-3 rounded-xl font-bold hover:bg-white transition-all mt-4 shadow-lg active:scale-95"
+                        >
+                            Ver Projeto Online <ExternalLink size={18} />
                         </a>
                     </div>
                 </div>
